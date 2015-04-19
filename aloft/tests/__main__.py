@@ -1,8 +1,7 @@
 from unittest import TestCase, main
 import os
 
-from aloft.api import (_find_station_line, _parse_station_line, winds_aloft,
-	_find_data_block)
+from aloft.api import _find_station_line, _parse_station_line
 
 BASE_DIR = os.path.dirname(__file__)
 
