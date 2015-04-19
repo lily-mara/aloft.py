@@ -1,5 +1,8 @@
 from setuptools import setup
 
+with open('requirements.txt') as f:
+	required = f.read().splitlines()
+
 setup(
 	name="aloft.py",
 	version="0.0.2",
@@ -16,4 +19,5 @@ setup(
 		"Topic :: Utilities",
 		"License :: OSI Approved :: MIT License",
 	],
+	install_requires=required,
 )
