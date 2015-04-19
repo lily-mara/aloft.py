@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import requests
-from collections import namedtuple
+from collections import namedtuple, OrderedDict
 from bs4 import BeautifulSoup
 import re
 
@@ -48,7 +48,7 @@ def _find_station_line(airport_code, data_block):
 
 def _parse_station_line(station_line):
 	match = LINE_PATTERN.match(station_line)
-	winds = {}
+	winds = OrderedDict()
 
 	winds[3000] = _parse_3k(match.group('three_K'))
 	winds[6000] = _parse_6k_24k(match.group('six_K'))
