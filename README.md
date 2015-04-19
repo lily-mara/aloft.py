@@ -1,6 +1,8 @@
 aloft.py
 ===
 
+[![Build Status](https://travis-ci.org/natemara/aloft.py.svg?branch=master)](https://travis-ci.org/natemara/aloft.py)
+
 A simple API for NOAA winds aloft data.
 
 Installation
