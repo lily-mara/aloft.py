@@ -58,3 +58,6 @@ target/
 
 # virtual environment
 aloft-env/
+
+# tagsfile
+tags
