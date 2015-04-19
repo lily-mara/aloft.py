@@ -1,0 +1,626 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<!--[if lt IE 9]>
+<meta http-equiv="X-UA-Compatible" content="IE=8" />
+<![endif]-->
+<base href="http://aviationweather.gov/" /><title>AWC - NCEP Winds Aloft Forecasts</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" >
+<meta http-equiv="content-type" content="text/html; charset=utf-8" >
+<meta name="DC.language" content="en-us" scheme="DCTERMS.RFC1766" >
+<meta name="description" content="Aviation Weather Center Homepage provides comprehensive user-friendly aviation weather Text products and graphics." >
+<meta name="keywords" content="aviation, weather, icing, turbulence, convection, pirep, metar, taf, airmet, sigmet, satellite, radar, surface, wind, temperature, aloft, airplane, NEXRAD, GOES, WSR-88D, precipitation, rain, snow, sleet, thunderstorm, en-route, prognosis, chart" >
+<meta name="DC.title" content="AWC &amp;#45; NCEP Winds Aloft Forecasts" >
+<meta name="DC.description" content="AWC &amp;#45; NCEP Winds Aloft Forecasts" >
+<meta name="DC.creator" content="NOAA's National Weather Service - Aviation Weather Center Homepage" >
+<meta name="DC.date.created" content="2005-01-26" scheme="ISO8601" >
+<meta name="DC.date.reviewed" content="2005-11-29" scheme="ISO8601" >
+
+<script type="text/javascript" src="//code.jquery.com/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="/static/javascript/winds/scripts.js"></script>
+<script type="text/javascript" src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<link href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css" media="screen" rel="stylesheet" type="text/css" >
+<link href="/static/css/winds/winds.css" media="screen" rel="stylesheet" type="text/css" >
+<link href="/images/favicon.ico" rel="shortcut icon" >
+<link href="/images/noaa_logo.png" rel="apple-touch-icon" >
+<link href="/css/layout.css" media="" rel="stylesheet" type="text/css" >
+
+</head>
+<body >
+<div id="awc_pagewrapper">
+<!-- Top header, banner text -->
+<div id="awc_head" >
+<div id="awc_header" >
+  <div class="awc_headerarea">
+    <div class="awc_headerleft">
+      <a href="http://www.noaa.gov"><img src="/images/layout/noaa_logo.png" border="0"/></a>
+      <a href="http://www.weather.gov"><img src="/images/layout/nws_logo.png" border="0"/></a>
+    </div> <!-- awc_headerleft -->
+    <div class="awc_headertext">
+      <h1><a href="/">AVIATION WEATHER CENTER</a><span style="font-size:14px;color:#555"></span></h1>
+      <h2><a href="http://www.noaa.gov">N O A A</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <a href="http://www.weather.gov">N A T I O N A L &nbsp;&nbsp;W E A T H E R &nbsp;&nbsp;S E R V I C E</a></h2>
+      </div> <!-- awc_headertext -->
+    <a href="http://www.commerce.gov">
+    <div class="awc_headerright">
+    </div> <!-- awc_headerright -->
+    </a>
+  </div> <!-- awc_headerarea -->
+</div> <!-- awc_header -->
+<!-- Header shadow -->
+<div id="awc_header_shadow" >
+  <div id="awc_header_shadow_content" > </div>
+</div>
+<!-- AWC Top Navigation Menu -->
+<div id="awc_topnav" >
+  <div id="awc_menu">
+  <ul>
+    <li style="float: left; width: 150px; top: -5px">
+
+	<script>
+  $(document).ready(function() {
+    $("#autocomplete").autocomplete({
+        source: function( request, response ) {
+            $.ajax({
+               url: "/popups/location?format=json",
+               dataType: "json",
+               data: request,
+               success: function(data){
+                   if (data.source.redirect) {
+                       // data.redirect contains the string URL to redirect to
+                       window.location.href = data.source.redirect;
+                   }
+                   else {
+
+                       var re = $.ui.autocomplete.escapeRegex(request.term);
+                       var matcher = new RegExp( "^" + re, "i" );
+                       var a = $.grep( data.source, function(item,index){
+                           return matcher.test(item['label']);
+                           });
+
+                       response(a);
+                       }
+                   }
+
+               });
+            }
+       });
+    $("#autocomplete").tooltip({ position: { my: "right center", at: "right-115 center" } });
+  });
+  </script>
+
+ <style>
+.ui-autocomplete {
+	max-height: 100px;
+	overflow-y: auto;
+	/* prevent horizontal scrollbar */
+	overflow-x: hidden;
+}
+
+/* IE 6 doesn't support max-height
+* we use height instead, but this forces the menu to always be this tall
+*/
+* html .ui-autocomplete {
+	height: 100px;
+}
+
+.ui-autocomplete-category {
+	font-weight: bold;
+	padding: .2em .4em;
+	margin: .8em 0 .2em;
+	line-height: 1.5;
+	text-align:left;
+}
+.ui-menu-item {
+   	text-align: left;
+}
+
+#getForecast > label {
+	display: inline-block;
+	width: 5em;
+}
+
+fieldset div {
+	margin-bottom: 2em;
+}
+
+fieldset .help {
+	display: inline-block;
+}
+
+.ui-tooltip {
+	width: 210px;
+}
+</style>
+
+
+<div class="ui-widget" style="width: 160px">
+<form id="getForecast" name="getForecast" action="/popups/location/search" method="POST" >
+    <input id="autocomplete" title="Enter City/St, or Zip Code, or ICAO identifier and click Go." autocomplete="off" onclick="this.value=(this.value=='Local Forecast'?'':this.value)" value="Local Forecast" name="inputstring" style="color:rgb(153,153,153); font-size: 8pt; height: 16px; width: 100px" type="text">
+    <input id="btnSearch" value="Go" name="btnSearch" type="submit" style="font-size: 8pt; height: 24px;">
+
+</form>
+</div>
+	</li>
+    <li class="awc_link" onClick="" aria-haspopup="true"><span>HOME</span>
+      <ul aria-haspopup="false">
+        <li class="awc_link"><a href="/">AWC Home</a></li>
+        <li class="awc_link" aria-haspopup="true" onClick=""><span>NCEP &gt;</span>
+          <ul aria-haspopup="false">
+	    <li class="awc_link"><a href="http://www.ncep.noaa.gov/">NCEP Home</a>
+            <li class="awc_link"><a href="/">Aviation (AWC)</a></li>
+            <li class="awc_link"><a href="http://www.cpc.ncep.noaa.gov">Climate (CPC)</a></li>
+            <li class="awc_link"><a href="http://www.nhc.noaa.gov">Hurricane (NHC)</a></li>
+            <li class="awc_link"><a href="http://www.emc.ncep.noaa.gov">Modeling (EMC)</a></li>
+            <li class="awc_link"><a href="http://www.opc.ncep.noaa.gov">Ocean (OPC)</a></li>
+            <li class="awc_link"><a href="http://www.nco.ncep.noaa.gov">Operations (NCO)</a></li>
+            <li class="awc_link"><a href="http://www.sec.noaa.gov">Space (SWPC)</a></li>
+            <li class="awc_link"><a href="http://www.spc.noaa.gov">Storm (SPC)</a></li>
+            <li class="awc_link"><a href="http://www.wpc.ncep.noaa.gov">Weather (WPC)</a></li>
+	  </ul>
+	</li>
+        <li class="awc_link"><a href="http://www.weather.gov/">NWS Home</a></li>
+        <li class="awc_link"><a href="http://www.noaa.gov/">NOAA Home</a></li>
+      </ul>
+    </li>
+    <li class="awc_link" onClick="" aria-haspopup="true"><span>ADVISORIES</span>
+      <ul aria-haspopup="false">
+        <li class="awc_link"><a href="/sigmet">SIGMET</a></li>
+        <li class="awc_link"><a href="/gairmet">G-AIRMET</a></li>
+        <li class="awc_link"><a href="/cwamis">Center Weather</a></li>
+        <li class="awc_link"><a href="/caws">Ops. Bridging &ndash; CAWS</a></li>
+      </ul>
+    </li>
+    <li class="awc_link" onClick="" aria-haspopup="true"><span>FORECASTS</span>
+      <ul aria-haspopup="false">
+        <li class="awc_link"><a href="/convection">Convection</a></li>
+        <li class="awc_link"><a href="/turbulence">Turbulence</a></li>
+        <li class="awc_link"><a href="/icing">Icing</a></li>
+        <li class="awc_link"><a href="/windtemp">Winds/Temps</a></li>
+        <li class="awc_link"><a href="/progchart">Prog Charts</a>
+        <li class="awc_link"><a href="/taf">TAFs</a></li>
+        <li class="awc_link"><a href="/wafs">WAFS Forecasts</a></li>
+        <li class="awc_link"><a href="/areafcst">Area Forecasts</a></li>
+        <li class="awc_link"><a href="/fcstdisc">Avn. Forecast Disc.</a></li>
+      </ul>
+    </li>
+    <li class="awc_link" onClick="" aria-haspopup="true" ><span>OBSERVATIONS</span>
+      <ul aria-haspopup="false">
+        <li class="awc_link"><a href="/airep">Aircraft Reps</a> </li>
+        <li class="awc_link"><a href="/metar">METARs</a> </li>
+        <li class="awc_link"><a href="/cva">Ceiling and Vis</a> </li>
+        <li class="awc_link"><a href="/radar">Radar</a></li>
+        <li class="awc_link"><a href="/satellite">Satellite</a></li>
+      </ul>
+    </li>
+    <li class="awc_link" onClick="" aria-haspopup="true"><span>TOOLS</span>
+      <ul aria-haspopup="false">
+        <li class="awc_link"><a href="/flightpath">Flight Path Tool</a></li>
+        <li class="awc_link"><a href="/dataserver">Text Data Server</a></li>
+        <li class="awc_link"><a href="/flightfolder">Flight Folder</a></li>
+        <li class="awc_link"><a href="/decisionsupport">Decision Support</a></li>
+        <li class="awc_link"><a href="/briefing">Standard Briefing</a></li>
+        <li class="awc_link"><a href="http://testbed.aviationweather.gov">Aviation Testbed</a></li>
+        <li class="awc_link"><a href="/info/links">Aviation Links</a></li>
+      </ul>
+    </li>
+        <li class="awc_link" onClick="" aria-haspopup="true" ><span>NEWS</span>
+
+      <ul aria-haspopup="false">
+        <li class="awc_link"><a href="/news">AWC News</a></li>
+        <li class="awc_link"><a href="https://www.facebook.com/US.NOAA.AviationWeatherCenter">Facebook</a></li>
+        <li class="awc_link"><a href="http://www.weather.gov/news">NWS News</a></li>
+      </ul>
+    </li>
+    <li class="awc_link" onClick="" aria-haspopup="true"><span>SEARCH</span>
+      <ul aria-haspopup="false">
+        <li class="awc_link">
+	  <form method="get" action="http://search.usa.gov/search">
+	  <input type="hidden" name="v:project" value="firstgov" />
+	  <label for="query">Search For</label>
+	  <input type="text" name="query" id="query" size="12" />
+	  <input type="submit" value="Go" />
+	  <p>
+	  <input type="radio" name="affiliate" checked="checked" value="nws.noaa.gov" id="nws" />
+	  <label for="nws" class="search-scope">NWS</label>
+	  <input type="radio" name="affiliate" value="noaa.gov" id="noaa" />
+	  <label for="noaa" class="search-scope">All NOAA</label>
+	  </p>
+	  </form>
+	</li>
+      </ul>
+    </li>
+    <li class="awc_link" onClick="" aria-haspopup="true"><span>ABOUT</span>
+      <ul aria-haspopup="false">
+        <li class="awc_link"><a href="/info">AWC</a></li>
+        <li class="awc_link"><a href="/info/legacy">Legacy</a></li>
+        <li class="awc_link"><a href="/help">Help</a></li>
+        <li class="awc_link"><a href="/info/faq">FAQ</a></li>
+        <li class="awc_link"><a href="/contact">Feedback</a></li>
+      </ul>
+    </li>
+    <li class="awc_link" onClick="" aria-haspopup="true"><span>USER</span>
+    <ul aria-haspopup="false">
+        	<li class="awc_link"><a href="/user">Login</a></li>
+    	<li class="awc_link"><a href="/user/index/create">Register</a></li>
+    
+    </ul>
+    </li>
+  </ul>
+  <br style="clear:all" clear="both" />
+  </div> <!-- awc_menu -->
+</div> <!-- awc_topnav -->
+</div>
+<!-- Main content -->
+<div id="awc_main">
+<div id="awc_main_content">
+
+
+
+<div style="width:550px; margin-left:200px">
+<div id="title">Forecast Winds and Temps Aloft
+<div id="help"><a href="/products/nws/info">FYI/Help</a></div></div>
+
+<form METHOD="GET" name="fltlvl"><dt id="fint-label">&#160;</dt>
+<dd id="fint-element">
+<input type="hidden" name="fint" value="06" id="fint"></dd><table width="550" border="0" cellpadding="0" cellspacing="0">
+	<tr>
+		<td align="center"><span class="timelbl">
+<label><input type="radio" name="lvl" id="lvl-lo" value="lo" checked="checked" onClick="this.form.submit()">Low</label> <label><input type="radio" name="lvl" id="lvl-hi" value="hi" onClick="this.form.submit()">High</label></span></td>
+		<td align="center"><span class="timelbl">
+<button name="FBWindsMap" id="FBWindsMap" type="button" value="FB Winds Map" onClick='location.href="/products/nws/winds/"'>FB Winds Map</button></span></td>
+		<td width="206">
+		<table width="204" border="0" cellpadding="0" cellspacing="0">
+			<tr>
+				<td align="center" width="38"><span class="timelbl">2000z</span></td>
+				<td align="center" width="49"><span class="timelbl">0300z</span></td>
+				<td align="center" width="58"><span class="timelbl">1200z</span></td>
+				<td align="right" width="65"><span class="timelbl">0000z</span></td>
+			</tr>
+			<tr>
+				<td width="204" colspan="4" align="center"><A
+					href="/products/nws/all?fint=06&lvl=lo"><img
+					src="/static/images/winds/btns/06hr.gif"
+					width="174" height="14" ALT="Clickable Image" USEMAP="#timeline"
+					NAME="btn1" align="center" border="0"></A></td>
+			</tr>
+			<tr>
+				<td width="204" colspan="4" align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+					class="timelblref">2032 UTC</span></td>
+			</tr>
+		</table>
+		</td>
+	</tr>
+</table>
+</form>
+<!-- FbWinds Time Bar IMAGE MAP -->
+<MAP NAME="timeline">
+	<AREA SHAPE=RECT COORDS="0,0,45,13"
+		HREF="/products/nws/all?fint=06&lvl=lo"
+		onMouseover="document.images.btn1.src=tl0606.src;"
+		onMouseout="document.images.btn1.src=tl06.src;"
+		ALT="06hr Forecast">
+	<AREA SHAPE=RECT COORDS="45,0,99,13"
+		HREF="/products/nws/all?fint=12&lvl=lo"
+		onMouseover="document.images.btn1.src=tl0612.src;"
+		onMouseout="document.images.btn1.src=tl06.src;"
+		ALT="12hr Forecast">
+	<AREA SHAPE=RECT COORDS="99,0,174,13"
+		HREF="/products/nws/all?fint=24&lvl=lo"
+		onMouseover="document.images.btn1.src=tl0624.src;"
+		onMouseout="document.images.btn1.src=tl06.src;"
+		ALT="24hr Forecast">
+</MAP>
+<div align="left" style="margin-left: 0px;"><pre>
+000
+FBUS31 KWNO 192004
+FD1US1
+DATA BASED ON 191800Z    
+VALID 200000Z   FOR USE 2000-0300Z. TEMPS NEG ABV 24000
+
+FT  3000    6000    9000   12000   18000   24000  30000  34000  39000
+ABI      3321+08 3223+01 2929-03 2837-17 2750-29 276844 288350 277052
+ABQ              2508+07 2813-01 2926-19 2930-31 293647 294553 284454
+ABR 3226 3328-02 3427-09 3332-15 2729-22 2434-33 214546 223649 233448
+ACK 0311 3108+04 2919+02 3022-03 3030-16 2842-27 307041 299149 792860
+ACY 1518 2018+07 1917+03 2021-03 2327-13 2643-22 275438 286149 278859
+AGC 1342 1743+09 1837+04 2048-01 2245-11 2241-22 244938 246848 248360
+ALB 1611 1908+04 2615+02 2617-04 2725-16 2737-27 296639 277750 782661
+ALS                      3012-04 3025-19 3128-31 303048 303455 283552
+AMA      3613    3421-02 3340-06 3242-19 3138-31 294746 284951 283850
+AST 0410 0207+09 3510+05 3314-01 3127-15 3023-29 311746 331556 312066
+ATL 2131 2535+11 2633+05 2538+02 2442-12 2448-25 216739 207547 208558
+AVP 1521 1925+08 1920+02 1922-03 2318-15 2640-23 275439 266050 770460
+AXN 3325 3229-02 3121-07 2616-13 2235-18 2047-30 197845 208152 224549
+BAM              3309+06 3410-01 3115-17 3316-30 352147 012456 011964
+BCE                      3215-01 3216-18 3514-31 021647 011455 291857
+BDL 1707 2805+06 2615+03 2616-04 2725-16 2638-27 296439 287650 782160
+BFF      3425    3426-05 3335-14 3241-23 3147-33 304347 304152 293550
+BGR 3209 3415-04 3326-07 3243-08 3161-18 3172-29 308944 299154 790258
+BHM 2423 2531+11 2637+04 2639+00 2547-15 2461-27 245542 225550 226053
+BIH      9900    2305+07 9900-01 9900-18 0307-30 271047 291257 300760
+BIL      3610    3510-07 3031-12 3338-24 3446-35 335049 335053 324152
+BLH 2011 2011+15 1509+07 0807+00 9900-17 2907-30 282945 273553 265156
+BML 9900 9900-01 3015-04 3130-07 3043-18 2952-28 287043 790051 289560
+BNA 2432 2537+09 2537+02 2640-03 2341-14 2030-26 193641 196648 215453
+BOI      3211+10 3412+03 3417-03 3326-18 3424-30 343447 333656 333562
+BOS 9900 3512+01 2918+02 2924-04 2933-17 2842-27 297041 299450 793360
+BRL 2616 2811+06 3007+00 3205-04 1708-15 1520-26 173943 174651 224151
+BRO 9900 2108+17 2310+11 2615+04 2737-11 2763-20 279135 289844 791656
+BUF 1531 1834+08 1725+02 1831-04 2217-16 2430-24 255439 256750 751161
+CAE 1929 2136+11 2234+06 2233+01 2240-10 2142-21 214336 214847 205460
+CAR 3317 3222-08 3335-11 3252-13 3274-21 3194-30 801045 800854 309456
+CGI 2620 2829+08 2739+02 2743-04 2640-15 2131-28 182842 203649 223050
+CHS 1933 2232+12 2344+07 2348+00 2252-10 2350-20 233736 223847 214259
+CLE 1346 1649+08 1746+04 1850-01 2046-11 2238-23 224339 228448 730160
+CLL 3018 2724+13 2632+06 2640-02 2644-15 2753-28 277741 780148 289555
+CMH 1451 1955+09 2144+04 2039-01 2037-11 2039-22 217237 218148 219259
+COU 2722 2721+04 2522-01 2431-06 2328-18 2037-28 174143 184048 224049
+CRP 2606 2709+16 2613+10 2521+02 2737-14 2760-22 279836 780945 792455
+CRW 1546 1954+10 2243+04 2137-01 2142-12 2048-22 205737 216748 227159
+CSG 2125 2630+11 2744+05 2640+02 2541-12 2452-25 227040 217148 217756
+CVG 1930 2236+09 2135+03 2139-02 2042-12 2038-23 207037 208448 700059
+CZI              3524-07 3235-12 3144-25 3153-36 315448 314751 313652
+DAL 3023 3025+08 2828+02 2832-02 2744-17 2755-30 277145 277650 275850
+DBQ 1107 9900+07 9900+00 1506-05 1718-16 1735-26 184542 184752 214853
+DEN              3608-02 3416-08 3139-21 3142-33 313748 303553 293551
+DIK      3328-01 3331-10 3331-18 3338-27 3344-36 313549 293048 292847
+DLH 3116 2615+01 2323-03 2127-08 2044-18 2149-29 217144 207552 235652
+DLN              3405+01 3116-07 3438-20 3446-32 345249 334955 324057
+DRT 3509 3409+15 3015+07 2726+00 2738-15 2756-26 780838 782346 783955
+DSM 3435 3621+04 3508-02 2407-06 2010-18 1832-29 165644 185852 214049
+ECK 1445 1732+07 1433+01 1520-04 2027-13 1935-24 225640 225550 730461
+EKN      1767+11 2052+07 2247+00 2140-11 2242-22 224537 235448 237360
+ELP      2406    2408+08 2409+00 3024-18 2840-29 276643 770248 771355
+ELY              3211+09 3211+00 3116-18 3316-30 012047 022356 340761
+EMI 1535 1834+08 1732+01 1934-02 2437-12 2644-22 264238 266149 267760
+EVV 2540 2637+08 2637+02 2533-03 2222-13 2225-25 172442 195349 205153
+EYW 2514 2213+16 2310+10 2411+06 2222-07 2434-19 253836 263346 273056
+FAT 3307 9900+14 1809+07 1713-01 9900-17 9900-30 101346 060956 260960
+GPI      9900+05 3210-03 3519-09 3435-20 3339-33 345948 345655 344658
+FLO 1930 2031+11 2038+06 2141+00 2142-10 2246-21 223836 223947 224461
+FMN              3118+06 3222-02 3220-18 3120-31 322048 302155 283255
+FOT 3306 9900+14 1205+06 1309-02 1120-16 0924-30 093246 103156 092763
+FSD 3327 3328+00 3323-08 3016-11 2421-19 2127-31 187945 196050 223849
+FSM 3019 2920+05 2622-01 2531-07 2542-19 2547-31 255543 254746 253347
+FWA 1345 1855+09 2042+05 2033+00 1939-11 1933-23 203039 217848 218558
+GAG      3425+02 3436-04 3233-06 3038-19 3033-32 294147 294749 283248
+GCK      3426+04 3426-05 3342-10 3142-20 3038-32 313247 304251 273046
+GEG      3308+07 3520-01 3519-06 3322-18 3437-31 344747 345557 344261
+GFK 3421 3334-04 3232-10 2924-16 2625-27 2254-32 216544 224548 234148
+GGW      3319-01 3320-09 3424-17 3437-26 3445-37 334949 334552 323550
+GJT              2909+04 3214-04 3330-19 3231-31 333348 333056 292356
+GLD      3427    3428-05 3342-12 3142-21 3142-32 313647 313752 283146
+GRB 1326 1513+07 2012+01 1816-05 1826-16 2036-25 205141 205952 215557
+GRI      3431+01 3435-08 3219-11 2918-20 3021-32 302148 241748 252747
+GSP 2038 2342+11 2434+06 2231+00 2231-11 2135-21 205337 206548 207259
+GTF      0607    3406-06 3130-10 3437-22 3451-34 345549 345555 334655
+H51 1905 1912+17 2214+10 2317+03 2635-11 2661-21 278736 289745 791355
+H52 9900 2405+16 2608+11 2713+04 2446-11 2555-20 276536 278146 298757
+H61 2517 2319+15 2416+10 2521+04 2339-09 2453-20 254536 264846 264657
+HAT 1630 1624+09 1819+04 2021+00 2529-10 2532-20 253737 254248 275259
+HOU 2614 2830+15 2632+08 2537+00 2645-15 2656-26 278739 780847 780456
+HSV 2523 2532+10 2635+03 2637-02 2548-15 2449-27 224442 205749 215753
+ICT 3329 3534+00 3223-03 3022-08 3024-20 3127-33 312646 282445 273046
+ILM 1830 2126+11 2230+06 2427+01 2331-10 2335-21 234036 244248 254560
+IMB              3009+03 3114-03 3323-17 3524-29 353046 353356 333363
+IND 2135 2233+08 2225+03 2216-02 1820-12 1923-23 183140 197249 207656
+INK      0208+13 3406+05 2829-01 2930-18 2849-29 277043 780048 289654
+INL 2811 2814-01 2515-07 2227-11 2145-19 2160-29 218845 219053 235450
+JAN 2021 2538+14 2637+06 2634-03 2545-15 2656-27 266244 266451 255152
+JAX 2332 2338+13 2340+07 2241+01 2445-09 2549-21 244737 224647 215758
+JFK 1212 2214+07 2113+03 2115-03 2520-16 2639-23 285738 276450 780560
+JOT 1024 1421+08 1620+04 1722-02 1919-13 2024-25 183741 183652 214754
+LAS      2707+17 2509+08 2608+00 3111-18 3214-30 302148 302155 282358
+LBB      3613+09 3415+00 3331-05 3037-18 2943-31 285845 286850 275751
+LCH 2417 2731+16 2636+08 2642+00 2646-15 2657-27 267541 279448 278755
+LIT 2123 2328+09 2439+02 2345-04 2553-16 2550-29 264944 254249 243349
+LKV              3505+07 3008-01 3314-17 0124-29 362446 351956 362166
+LND              9900-02 2912-07 3132-21 3241-33 325149 324754 314355
+LOU 2134 2342+08 2232+03 2134-02 2141-12 2035-24 195938 198648 208657
+LRD 0405 3306+17 2512+10 2422+02 2737-14 2762-23 279935 780745 792555
+LSE 3205 9900+05 1914+00 1920-06 1919-17 2038-27 195443 195652 215752
+LWS 3208 3311+07 3412-01 3416-06 3322-18 3433-31 344647 344857 333561
+MBW              3413    3223-10 3141-22 3146-33 314348 304453 303953
+MCW 3432 3312+03 9900-02 2107-07 1817-17 1828-29 185944 196652 214150
+MEM 2119 2528+11 2533+04 2640-04 2543-15 2438-30 264543 242949 233750
+MGM 2521 2625+12 2633+05 2638+00 2548-14 2556-26 236341 226150 226555
+MIA 2413 2509+16 2710+10 2414+05 2224-07 2436-19 253836 263747 252557
+MKC 3235 3122+04 3022-02 3118-08 2310-19 2216-32 163842 183245 223348
+MKG 1138 1336+07 1433+02 1532-03 1827-14 1832-25 204740 194952 216057
+MLB 2717 2618+14 2420+08 2425+03 2444-08 2452-21 254436 263746 231657
+MLS      3320+00 3326-09 3322-17 3337-25 3437-36 344349 334150 313550
+MOB 2512 2721+15 2728+07 2729+00 2540-14 2556-26 256842 267149 256856
+MOT      3331-04 3433-11 3328-18 3230-30 3339-38 303145 282847 272347
+MQT 1636 2026+07 2124+01 2117-04 1922-17 2032-27 225842 226652 236556
+MRF              9900+09 2412+01 2727-17 2753-27 770739 772946 784655
+MSP 3224 3114+01 2517-04 2222-08 2032-18 1945-29 206944 207352 215352
+MSY 2214 2524+15 2529+07 2735+00 2644-13 2656-26 267241 278248 267756
+OKC 3426 3320+03 3025-01 3130-06 3049-19 3048-32 286446 285046 273448
+OMA 3333 3437+00 3316-03 3012-08 2310-19 1812-32 165844 174649 213849
+ONL      3329+01 3436-08 3432-15 2922-20 2722-32 251947 232049 252848
+ONT 2510 2006+15 1305+07 0909+00 1205-17 9900-31 281545 262155 263557
+ORF 1534 1630+08 1824+03 2026-02 2434-11 2537-21 253737 264248 265461
+OTH 0313 0206+13 3606+07 3607+00 0412-16 0310-29 021246 030956 021566
+PDX 0406 9900+09 3607+04 3313-01 3332-15 3227-30 332446 342356 322665
+PFN 2425 2520+12 2626+07 2633+02 2539-12 2561-24 237539 247248 237056
+PHX 2610 2611+16 2510+07 9900+00 3410-17 2915-30 283845 275052 266355
+PIE 2418 2224+14 2425+09 2431+04 2444-11 2451-21 234936 234947 223757
+PIH      2905    2808+02 3215-05 3324-19 3330-31 334148 334156 313459
+PIR      3228+00 3434-08 3331-15 3131-23 2827-34 252946 253149 262348
+PLB 1112 1806+01 2713-01 2923-06 2934-18 2839-29 286942 780250 289161
+PRC              2716+09 2814+00 3311-18 3311-30 292547 283654 274356
+PSB      1743+06 1734+02 1828-02 2332-12 2551-22 254639 266848 269360
+PSX 2713 2617+16 2519+09 2631+01 2641-15 2757-25 780337 771346 782856
+PUB              9900-02 3205-09 3032-19 3136-32 303948 303754 283250
+PWM 3505 3412-01 3017-02 3029-06 3140-18 3052-28 287143 800950 790761
+RAP      3329+01 3433-07 3332-15 3138-24 3142-36 304447 294149 293249
+RBL 3306 3606+15 9900+07 1106-01 1016-16 0918-30 082746 092756 092063
+RDM      0108+11 2810+05 3115-01 3425-16 3433-29 353046 352856 332565
+RDU 1539 1935+11 2131+06 2228+00 2231-10 2241-21 234237 234648 245560
+RIC 1439 1635+09 1734+04 2035-01 2331-11 2535-21 264237 254948 245861
+RKS              3011    3012-05 3131-20 3238-32 324548 324155 313556
+RNO      0306    0306+07 3507-01 1006-17 0911-30 081747 091956 081463
+ROA 1230 1654+10 2045+05 2140-01 2039-10 2150-21 224837 225248 236460
+ROW      1105    9900+03 2821-01 3032-18 2938-31 285945 287051 276954
+SAC 2805 9900+14 9900+07 1206-01 9900-18 1010-30 060547 990056 990061
+SAN 3007 9900+13 1209+06 1214+00 9900-16 2606-30 251445 262952 255256
+SAT 9900 3113+16 2814+09 2526+01 2738-15 2761-25 780837 781645 783055
+SAV 2228 2247+12 2437+07 2537+02 2448-10 2451-21 224536 224547 204459
+SBA 9900 1306+14 1110+06 1112-01 1708-17 1605-31 230646 231255 252457
+SEA 0106 9900+08 3510+02 3412-03 3226-16 3225-29 322546 333156 333165
+SFO 9900 9900+13 1506+06 1410-01 1208-17 0906-30 101346 090856 990060
+SGF 2721 2722+04 2631-01 2535-06 2339-20 2147-31 214442 213645 233548
+SHV 2423 2633+10 2543+03 2549-03 2646-16 2656-29 266945 276950 265451
+SIY      3305+14 9900+06 9900+00 9900-16 0621-29 052046 061656 042165
+SLC      9900    3013+04 3114-04 3225-18 3227-31 333547 343655 312560
+SLN 3328 3332+00 3324-05 3121-09 2918-20 3126-33 312647 272046 252647
+SPI 3019 3019+06 2916+01 2511-03 2116-14 2024-26 183642 184051 223750
+SPS 3324 3322+06 3121+00 2930-04 2837-18 2851-31 286245 286350 274149
+SSM 1344 1727+06 1820+02 2022-04 2221-17 2326-26 245641 236652 246361
+STL 2821 2825+07 2831+02 2631-04 2330-16 1925-27 173543 184049 223450
+SYR 1526 2019+07 2116+02 2117-04 2422-16 2634-26 276139 267451 771961
+T01 2515 2516+16 2521+09 2630+01 2644-14 2661-24 279538 771147 780656
+T06 2112 2518+16 2723+09 2833+01 2642-13 2561-24 278538 771047 279657
+T07 2518 2612+15 2726+09 2628+02 2642-12 2562-23 257238 278747 278158
+TCC      1007    1005+01 2819-05 3233-19 3134-32 304147 284952 274251
+TLH 2428 2623+13 2523+08 2631+02 2539-12 2561-23 237438 236747 227457
+TRI      2133+11 2331+04 2232-01 2038-11 2048-22 205937 206448 207860
+TUL 3224 3017+04 2925-01 2828-08 2832-21 2727-33 263542 263943 263246
+TUS      2910+16 2406+08 2007+00 9900-17 2822-29 274243 267649 760056
+TVC 1333 1718+08 1819+02 1822-04 1923-15 2129-25 214641 215452 225358
+TYS 2026 2336+10 2337+04 2337-01 2141-12 2145-24 197137 198048 199260
+WJF      2412+15 9900+07 9900-01 9900-17 1105-31 290946 261755 262658
+YKM 9900 9900+08 3609+02 3411-03 3320-16 3322-29 333046 343856 343864
+ZUN              3017+09 3017+00 2924-19 3028-31 293647 284254 274355
+2XG 2019 2423+15 2530+08 2325+02 2440-08 2342-20 254635 264447 272858
+4J3 2523 2523+13 2522+09 2528+03 2551-11 2463-22 236637 256547 246257
+</pre></div>
+<table width="525" align="center" border="0" cellpadding="0"
+	cellspacing="0" align="center">
+	<tr>
+		<td width="150">&nbsp;</td>
+		<td width="168" valign="bottom">
+		<div align="center">
+		<FORM><INPUT type="button" value="FB Winds Map"
+			onClick="location.href='/products/nws/winds/'"></FORM>
+		</div>
+		</td>
+		<td width="206">&nbsp;</td>
+	</tr>
+</table>
+<br clear="both" style="clear:both;">
+
+</div> <!-- awc_main_content -->
+</div> <!-- awc_main -->
+
+<!-- Bottom Nav content -->
+<div id="awc_botnav">
+  <div id="awc_botnav_content">
+  <p style="text-align: center; font-size: 10px; color: #1150a0">
+    Page loaded:&nbsp;
+  <A HREF="http://www.time.gov">20:32 UTC</A>&nbsp;&nbsp;|&nbsp;&nbsp;
+  01:32 PM  Pacific&nbsp;&nbsp;|&nbsp;&nbsp;
+  02:32 PM  Mountain&nbsp;&nbsp;|&nbsp;&nbsp;
+  03:32 PM  Central&nbsp;&nbsp;|&nbsp;&nbsp;
+  04:32 PM  Eastern
+  </p>
+  <div style="display: table-row">
+    <div style="display: table-cell; width: 100px">&nbsp;</div>
+    <div style="display: table-cell; width: 200px">
+      <h1>ADVISORIES</h1>
+      <ul>
+        <li><a href="/sigmet">SIGMET</a></li>
+        <li><a href="/gairmet">G-AIRMET</a></li>
+        <li><a href="/cwamis">Center Weather</a></li>
+        <li><a href="/caws">Ops. Bridging - CAWS</a></li>
+      </ul>
+      <h1>FORECASTS</h1>
+      <ul>
+        <li><a href="/convection">Convection</a></li>
+        <li><a href="/turbulence">Turbulence</a></li>
+      </ul>
+    </div>
+    <div style="display: table-cell; width: 200px">
+      <h1>FORECASTS</h1>
+      <ul>
+        <li><a href="/icing">Icing</a></li>
+        <li><a href="/windtemp">Winds/Temps</a></li>
+        <li><a href="/progchart">Prog Charts</a></li>
+        <li><a href="/taf">TAFs</a></li>
+        <li><a href="/wafs">WAFS Forecasts</a></li>
+        <li><a href="/areafcst">Area Forecasts</a></li>
+        <li><a href="/fcstdisc">Avn Forecast Disc (AFD)</a></li>
+      </ul>
+    </div>
+    <div style="display: table-cell; width: 200px">
+      <h1>OBSERVATIONS</h1>
+      <ul>
+        <li><a href="/airep">Aircraft Reps</a></li>
+        <li><a href="/metar">METARs</a></li>
+        <li><a href="/cva">Ceiling and Vis</a></li>
+        <li><a href="/radar">Radar</a></li>
+        <li><a href="/satellite">Satellite</a></li>
+      </ul>
+    </div>
+    <div style="display: table-cell; width: 200px">
+      <h1>USER TOOLS</h1>
+      <ul>
+        <li><a href="/flightpath">FPT Application</a></li>
+        <li><a href="/dataserver">Text Data Server</a></li>
+        <li><a href="/flightfolder">Flight Folder</a></li>
+        <li><a href="/decisionsupport">Decision Support</a></li>
+        <li><a href="/briefing">Standard Briefing</a></li>
+        <li><a href="http://testbed.aviationweather.gov">Aviation Testbed</a></li>
+        <li><a href="/info/links">Aviation Links</a></li>
+      </ul>
+    </div>
+    <div style="display: table-cell; width: 200px">
+      <h1>ABOUT US</h1>
+      <ul>
+        <li><a href="/info">AWC</a></li>
+        <li><a href="/info/legacy">Legacy</a></li>
+        <li><a href="/help">Help</a></li>
+        <li><a href="/info/faq/">FAQ</a></li>
+        <li><a href="/contact">Feedback</a></li>
+      </ul>
+    </div>
+  </div> <!-- table -->
+  </div> <!-- awc_botnav_content -->
+</div> <!-- awc_botnav -->
+
+<!-- Footer -->
+<div id="awc_footer">
+  <div id="awc_footer_content">
+
+  <div style="width:240px; float: left; text-align:left">
+    <img src="/images/layout/usa_gov.png"/>
+  </div>
+  <div style="width:260px; float: left; text-align:left">
+    <a href="http://www.commerce.gov/">US Dept of Commerce</a><br/>
+    <a href="http://www.noaa.gov/">National Oceanic and Atmospheric Administration</A><br/>
+    <A href="http://www.weather.gov/">National Weather Service</a><br/>
+    <A href="http://www.ncep.noaa.gov/"><SPAN class="gray">National Centers for Environmental Prediction</SPAN></a><BR/>
+    <A href="/">Aviation Weather Center</a><br/>
+    7220 NW 101st Terr., Room 118<br/>
+    Kansas City, MO 64153-2371<br/>
+  </div>
+  <div style="width:220px; float: left; text-align:left">
+    <a href="http://www.weather.gov/disclaimer">Disclaimer</a><br/>
+    <a href="http://www.cio.noaa.gov/services_programs/info_quality.html">Information Quality</a><br/>
+    <A href="http://www.weather.gov/glossary">Glossary</a><br/>
+    <A href="/info">About Us</a><br/>
+    <a href="mailto:ncep.awc.avwx@noaa.gov?subject=AWC WEB Page--Feedback">
+    Contact AWC</a><br/>
+  </div>
+  <div style="width:240px; float: left; text-align:left">
+    <A href="http://www.weather.gov/privacy">Privacy Policy</a><br/>
+    <A href="http://www.rdc.noaa.gov/~foia">Freedom of Information Act (FOIA)</a><br/>
+    <a href="http://www.weather.gov/careers">Career Opportunities</a><br/>
+    Server:     WOC44 <br/>
+  </div>
+  </div>  <!-- awc_footer_content -->
+</div>  <!-- awc_footer -->
+</body>
+
+</html>
