@@ -5,7 +5,7 @@ with open('requirements.txt') as f:
 
 setup(
 	name="aloft.py",
-	version="0.0.2",
+	version="0.0.3",
 	author="Nate Mara",
 	author_email="natemara@gmail.com",
 	description="A simple API for getting winds aloft data from NOAA",
