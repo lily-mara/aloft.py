@@ -156,6 +156,5 @@ class TestFindStationLine(TestCase):
 			_find_station_line('fjaksdlf', self.data)
 
 
-
 if __name__ == '__main__':
 	main()

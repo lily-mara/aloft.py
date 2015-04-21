@@ -45,7 +45,7 @@ def airport_codes():
 	"""
 	Returns the set of airport codes that is available to be requested.
 	"""
-	requests.get(URL).text
+	html = requests.get(URL).text
 	data_block = _find_data_block(html)
 
 	return _airport_codes_from_data_block(data_block)
