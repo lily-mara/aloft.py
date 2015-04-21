@@ -11,12 +11,18 @@ class WindsAloft(namedtuple('WindsAloft', 'station winds')):
 		return json.dumps(self.dict())
 
 	def dict(self):
-		return {
-			'station': self.station, 'winds': {
-				altitude: wind.dict() if wind else Wind(0, 0).dict()
-				for altitude, wind in self.winds.items()
-			}
-		}
+		d = {'station': self.station, 'winds': []}
+
+		for altitude, wind in self.winds.items():
+			if wind:
+				wind_dict = wind.dict()
+			else:
+				wind_dict = Wind(0, 0).dict()
+			wind_dict['altitude'] = altitude
+
+			d['winds'].append(wind_dict)
+
+		return d
 
 
 class Wind(namedtuple('Wind', 'direction speed')):

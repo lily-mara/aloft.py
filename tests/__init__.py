@@ -47,17 +47,23 @@ class TestWindsAloftDictAllGood(TestCase):
 		self.winds = _parse_station_line(self.line)
 		self.winds_dict = self.winds.dict()
 
+	def get_dict_at_altitude(self, altitude):
+		for d in self.winds_dict['winds']:
+			if d['altitude'] == altitude:
+				return d
+		raise ValueError
+
 	def test_3k_winds(self):
-		self.assertEqual(self.winds_dict['winds'][3000]['direction'], 190)
-		self.assertEqual(self.winds_dict['winds'][3000]['speed'], 30)
+		self.assertEqual(self.get_dict_at_altitude(3000)['direction'], 190)
+		self.assertEqual(self.get_dict_at_altitude(3000)['speed'], 30)
 
 	def test_6k_winds(self):
-		self.assertEqual(self.winds_dict['winds'][6000]['direction'], 220)
-		self.assertEqual(self.winds_dict['winds'][6000]['speed'], 36)
+		self.assertEqual(self.get_dict_at_altitude(6000)['direction'], 220)
+		self.assertEqual(self.get_dict_at_altitude(6000)['speed'], 36)
 
 	def test_9k_winds(self):
-		self.assertEqual(self.winds_dict['winds'][9000]['direction'], 210)
-		self.assertEqual(self.winds_dict['winds'][9000]['speed'], 35)
+		self.assertEqual(self.get_dict_at_altitude(9000)['direction'], 210)
+		self.assertEqual(self.get_dict_at_altitude(9000)['speed'], 35)
 
 
 class TestWindsAloftDictSomeNone(TestCase):
@@ -68,18 +74,23 @@ class TestWindsAloftDictSomeNone(TestCase):
 		self.winds = _parse_station_line(self.line)
 		self.winds_dict = self.winds.dict()
 
+	def get_dict_at_altitude(self, altitude):
+		for d in self.winds_dict['winds']:
+			if d['altitude'] == altitude:
+				return d
+		raise ValueError
+
 	def test_3k_winds(self):
-		self.assertEqual(self.winds_dict['winds'][3000]['direction'], 0)
-		self.assertEqual(self.winds_dict['winds'][3000]['speed'], 0)
+		self.assertEqual(self.get_dict_at_altitude(3000)['direction'], 0)
+		self.assertEqual(self.get_dict_at_altitude(3000)['speed'], 0)
 
 	def test_6k_winds(self):
-		self.assertEqual(self.winds_dict['winds'][6000]['direction'], 0)
-		self.assertEqual(self.winds_dict['winds'][6000]['speed'], 0)
+		self.assertEqual(self.get_dict_at_altitude(6000)['direction'], 0)
+		self.assertEqual(self.get_dict_at_altitude(6000)['speed'], 0)
 
 	def test_9k_winds(self):
-		self.assertEqual(self.winds_dict['winds'][9000]['direction'], 360)
-		self.assertEqual(self.winds_dict['winds'][9000]['speed'], 8)
-
+		self.assertEqual(self.get_dict_at_altitude(9000)['direction'], 360)
+		self.assertEqual(self.get_dict_at_altitude(9000)['speed'], 8)
 
 
 class TestParseStationLine(TestCase):
