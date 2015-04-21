@@ -13,7 +13,8 @@ class WindsAloft(namedtuple('WindsAloft', 'station winds')):
 	def dict(self):
 		return {
 			'station': self.station, 'winds': {
-				altitude: wind.dict() for altitude, wind in self.winds.items()
+				altitude: wind.dict() if wind else Wind(0, 0).dict()
+				for altitude, wind in self.winds.items()
 			}
 		}
 
