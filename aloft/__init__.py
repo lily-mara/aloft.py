@@ -3,9 +3,29 @@ import requests
 from collections import namedtuple, OrderedDict
 from bs4 import BeautifulSoup
 import re
+import json
 
-WindsAloft = namedtuple('WindsAloft', 'station winds')
-Wind = namedtuple('Wind', 'direction speed')
+
+class WindsAloft(namedtuple('WindsAloft', 'station winds')):
+	def json(self):
+		return json.dumps(self.dict())
+
+	def dict(self):
+		return {
+			'station': self.station, 'winds': {
+				altitude: wind.dict() for altitude, wind in self.winds.items()
+			}
+		}
+
+
+class Wind(namedtuple('Wind', 'direction speed')):
+	def json(self):
+		return json.dumps(self.dict())
+
+	def dict(self):
+		return {'direction': self.direction, 'speed': self.speed}
+
+
 URL = 'http://aviationweather.gov/products/nws/all'
 LINE_PATTERN = re.compile(r"""
 	(?P<code>\w+)\s               # Airport code
