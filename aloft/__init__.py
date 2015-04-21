@@ -41,22 +41,14 @@ LINE_PATTERN = re.compile(r"""
 )
 
 
-def airport_codes(html=None):
+def airport_codes():
 	"""
 	Returns the set of airport codes that is available to be requested.
 	"""
-	if html is None:
-		html = requests.get(URL).text
-
+	requests.get(URL).text
 	data_block = _find_data_block(html)
-	codes = set()
 
-	for line in data_block:
-		match = LINE_PATTERN.match(line)
-		if match:
-			codes.add(match.group('code'))
-
-	return codes
+	return _airport_codes_from_data_block(data_block)
 
 
 def winds_aloft(airport_code):
@@ -65,6 +57,17 @@ def winds_aloft(airport_code):
 	data_block = _find_data_block(html)
 	station_line = _find_station_line(airport_code, data_block)
 	return _parse_station_line(station_line)
+
+
+def _airport_codes_from_data_block(data_block):
+	codes = set()
+
+	for line in data_block:
+		match = LINE_PATTERN.match(line)
+		if match:
+			codes.add(match.group('code'))
+
+	return codes
 
 
 def _find_data_block(html):
