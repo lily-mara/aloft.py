@@ -39,7 +39,6 @@ class TestAirportCodes(TestCase):
 		self.assertEqual(_airport_codes_from_data_block(self.data), codes)
 
 
-
 class TestWindsAloftDictAllGood(TestCase):
 	def setUp(self):
 		with open(os.path.join(BASE_DIR, 'example_data.txt'), 'r') as data_file:
