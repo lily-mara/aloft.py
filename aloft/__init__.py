@@ -49,7 +49,6 @@ LINE_PATTERN = re.compile(
 	""",
 	re.VERBOSE
 )
-#LINE_PATTERN = re.compile(r"""(?P<code>.{3})\s(?P<three_K>.{4})\s(?P<six_K>.{7})\s(?P<nine_K>.{7})\s(?P<twelve_K>.{7})\s(?P<eighteen_K>.{7})\s(?P<twenty_four_K>.{7})\s(?P<thirty_K>.{6})\s(?P<thirty_four_K>.{6})\s(?P<thirty_nine_K>.{6})\s""",re.VERBOSE)
 
 
 def airport_codes():
