@@ -20,9 +20,9 @@ Example
 Using the API is incredibly simple:
 
 ```python
->>> from aloft.api import winds_aloft
+>>> from aloft import winds_aloft
 
 >>> winds = winds_aloft('cvg')
 >>> print(winds.winds[3000])
-Wind(direction=360, speed=8)
+Wind(direction=360, speed=8, temp=-32)
 ```
